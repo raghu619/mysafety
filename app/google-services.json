@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "1082715295392-9fkceqd9hvok67ibcjc543r9pm627ndb.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.raghvendra.mysafety",
+            "certificate_hash": "d0796fd6404c0990badfba026793dbece0a5f41a"
+          }
+        },
+        {
           "client_id": "1082715295392-mebrn11hg1nrqvdhsdqb9be2e7d02hlh.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
