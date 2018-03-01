@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFCDD2"
+    android:orientation="vertical"
+    android:padding="16dp"
+    tools:context="com.example.raghvendra.mysafety.ContactsACT.ContactForm">
+    <TextView
+        android:id="@+id/contact_form_title1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="16dp"
+        android:layout_marginTop="5dp"
+        android:text="MY SAFETY DETAILS"
+        android:textColor="#ce3232"
+        android:textSize="40sp"
+        android:typeface="serif" />
+
+    <EditText
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/colorPrimaryDark"
+        android:hint="Name"
+        android:inputType="textPersonName"
+        android:id="@+id/editText2"/>
+
+    <EditText
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/colorPrimaryDark"
+        android:hint="Phone"
+        android:inputType="phone"
+        android:id="@+id/edit_phone_number3"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:background="@color/colorPrimaryDark"
+        android:elevation="4dp"
+        android:paddingLeft="70dp"
+        android:paddingRight="70dp"
+        android:text="Submit"
+        android:textColor="#fff"
+        android:id="@+id/submit_area4"/>
+
+
+</LinearLayout>

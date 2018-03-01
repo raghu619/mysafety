@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
+    >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="163dp"
+        android:orientation="vertical"
+        android:paddingBottom="8dp"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingTop="24dp">
+
+        <!-- TextView that displays the description of a task -->
+        <TextView
+            android:id="@+id/taskDescription1"
+            style="@style/TextAppearance.AppCompat.Medium"
+            android:layout_width="284dp"
+            android:layout_height="48dp"
+            android:textColor="@android:color/primary_text_light"
+            tools:text="This is text" />
+
+        <TextView
+            android:id="@+id/taskDescription2"
+            style="@style/TextAppearance.AppCompat.Medium"
+            android:layout_width="284dp"
+            android:layout_height="79dp"
+
+            android:textColor="@android:color/primary_text_light"
+            tools:text="This text 2" />
+
+
+        <!-- An empty view for spacing out the description and priority views -->
+
+
+    </LinearLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@android:color/darker_gray"/>
+
+</LinearLayout>
