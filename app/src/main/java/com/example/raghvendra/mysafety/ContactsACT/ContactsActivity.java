@@ -62,7 +62,8 @@ public class ContactsActivity extends AppCompatActivity implements
                 GroupdetailsDBHelper dbHelper = new GroupdetailsDBHelper(ContactsActivity.this);
                 final SQLiteDatabase db= dbHelper.getWritableDatabase();
                 tasksDeleted=db.delete(DetailsContract.GroupDetails.TABLE_NAME,"_id=?",new String[]{stringId});
-                Toast.makeText(ContactsActivity.this, "ROW ID" + tasksDeleted, Toast.LENGTH_LONG).show();
+
+                Toast.makeText(ContactsActivity.this, "ROW ID Successfully deleted" + tasksDeleted, Toast.LENGTH_LONG).show();
                 getSupportLoaderManager().restartLoader(TASK_LOADER_ID,null, ContactsActivity.this);
 
 
@@ -74,18 +75,21 @@ public class ContactsActivity extends AppCompatActivity implements
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
                 Context context = ContactsActivity.this;
 
                 Intent ContactformActivity = new Intent(context, ContactForm.class);
                 startActivity(ContactformActivity);
+                finish();
             }
         });
 
         getSupportLoaderManager().initLoader(TASK_LOADER_ID, null, this);
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+    }
 
     @Override
     protected void onResume() {

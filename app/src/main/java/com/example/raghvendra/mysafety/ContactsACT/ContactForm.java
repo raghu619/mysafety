@@ -49,6 +49,7 @@ public class ContactForm extends AppCompatActivity {
 
                                                    Toast.makeText(ContactForm.this, "ROW ID" + checkID, Toast.LENGTH_LONG).show();
                                                    startActivity(submitActivity);
+                                                   finish();
 
 
                                                } else {

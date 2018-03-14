@@ -1,6 +1,7 @@
 package com.example.raghvendra.mysafety;
 
 import android.*;
+import android.app.LoaderManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -8,6 +9,8 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.location.Location;
 import android.location.LocationManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
@@ -41,36 +44,42 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.google.firebase.database.Query;
 
+import java.sql.Time;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.concurrent.TimeUnit;
 
 import static com.google.android.gms.common.api.GoogleApiClient.*;
 
 public class MainActivity extends AppCompatActivity implements ConnectionCallbacks, OnConnectionFailedListener ,LocationListener{
     private static final String TAG=MainActivity.class.getName();
-    public static final String ANONYMOUS="anonymous";
+
     private static final int LOCATION_REQUEST = 500;
     private static final int LOCATION_REQUEST1 = 501;
     public static final int RC_SIGN_IN = 1;
-    private static final int RC_PHOTO_PICKER = 2;
+
     private FirebaseAuth mFirebseAuth;
     private FirebaseAuth.AuthStateListener mAuthStateListener;
-    private ProgressBar mProgressBar;
+
     private FirebaseStorage mFirebaseStorage;
-    private StorageReference mPhotoStorageReference;
-    private ImageButton mImageButton;
-    private TextView mTextView;
-    private TextView mTextView1;
+
+
     private ImageView mImageView;
     private GoogleApiClient mGoogleApiClient;
-    private  Button mButton;
-    private Button mButton2;
+
     private  String latitude;
     private  String longitude;
     private FirebaseDatabase mFirebaseDatabase;
@@ -79,28 +88,32 @@ public class MainActivity extends AppCompatActivity implements ConnectionCallbac
     private Cursor mCursor;
     private  static FirebaseUser user;
     private LocationManager locationManager;
+    private String Phone_no;
+    private String Username;
+    private static ArrayList<String> Police_contacts;
 
     private LocationRequest mLocationRequest;
-    String UserId = "";
+    String UserId ="";
+    private  String address="";
+    private String date="";
+    String key="";
+    private  String status="Not Accepted";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
-     //   mProgressBar=(ProgressBar)findViewById(R.id.progressBar);
+
        mImageView=findViewById(R.id.imageView1);
-//        mButton=findViewById(R.id.button2);
-//        mButton2=findViewById(R.id.button3);
-//        mTextView=findViewById(R.id.textView);
-//        mTextView1=findViewById(R.id.textView2);
+
       mFirebseAuth=FirebaseAuth.getInstance();
         mFirebaseDatabase=FirebaseDatabase.getInstance();
         mFirebaseStorage=FirebaseStorage.getInstance();
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 
 
-       //mPhotoStorageReference=mFirebaseStorage.getReference().child("Adhar_photos");
-        mMessagesDatabaseReference=mFirebaseDatabase.getReference().child("DATA");
+
+        mMessagesDatabaseReference=mFirebaseDatabase.getReference();
 
 
         mGoogleApiClient =new GoogleApiClient.Builder(this)
@@ -109,63 +122,79 @@ public class MainActivity extends AppCompatActivity implements ConnectionCallbac
                 .addOnConnectionFailedListener(this)
                 .build();
 
-       // mProgressBar.setVisibility(View.INVISIBLE);
+
         getLocationrequest();
         mGoogleApiClient.connect();
-      // String test=getForm(UserId);
-
-
-       // mTextView.setText(""+Current_Location.getLatitude()+" "+Current_Location.getLongitude());
-//        mButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//
-//                mGoogleApiClient.connect();
-//                getLocationrequest();
-//                               }
-////
-//
-//
-//
-//            }
-//        );
-
-      //  mButton2 =findViewById(R.id.button3);
-        mImageView.setOnClickListener(new View.OnClickListener() {
+        mMessagesDatabaseReference.child("POLICE_DATA").addValueEventListener(new ValueEventListener() {
             @Override
-            public void onClick(View v) {
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Police_contacts=new ArrayList<String>();
 
-                if(mGoogleApiClient!=null) {
+                for(DataSnapshot ds : dataSnapshot.getChildren()){
+                    Police_data data = ds.getValue(Police_data.class);
+
+                    Police_contacts.add(data.getMphone_no());
 
 
-                    if (longitude != null && latitude != null) {
 
-                        Current_Location current_location = new Current_Location(String.valueOf(longitude), String.valueOf(latitude), UserId);
-
-                        mMessagesDatabaseReference.push().setValue(current_location);
-                        Toast.makeText(MainActivity.this, "Successfully uploaded", Toast.LENGTH_LONG).show();
-                        SmsUtilities.sendSMSMessage(MainActivity.this);
-                    }
-
-                    else {
-
-                        Toast.makeText(MainActivity.this, "Make sure that GPS is ON", Toast.LENGTH_LONG).show();
-
-                    }
                 }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
             }
         });
 
 
-//        mImageView.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//              Intent intent =new Intent(Intent.ACTION_GET_CONTENT);
-//              intent.setType("image/jpeg");
-//              intent.putExtra(Intent.EXTRA_LOCAL_ONLY,true);
-//               startActivityForResult(Intent.createChooser(intent,"Complete action using"),RC_PHOTO_PICKER);
-//            }
-//        });
+
+
+
+           mImageView.setOnClickListener(new View.OnClickListener() {
+               @Override
+               public void onClick(View v) {
+                   ConnectivityManager connMgr=(ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
+                   NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+                 if(networkInfo != null && networkInfo.isConnected()) {
+
+
+                     if (mGoogleApiClient != null) {
+
+
+                         if (longitude != null && latitude != null) {
+                             Double slatitude = new Double(latitude);
+                             Double slongitude = new Double(longitude);
+                             SmsUtilities.sendSMSMessage(MainActivity.this, slatitude, slongitude);
+                             address = SmsUtilities.getAddress();
+
+                             SimpleDateFormat df = new SimpleDateFormat("EEE, d MMM yyyy, KK:mm");
+                             date = df.format(Calendar.getInstance().getTime());
+
+
+                             Current_Location current_location = new Current_Location(String.valueOf(longitude), String.valueOf(latitude), UserId, address, date, Phone_no, Username, key, status);
+
+                             mMessagesDatabaseReference.child("DATA").child(key).setValue(current_location);
+                             Toast.makeText(MainActivity.this, "Successfully uploaded", Toast.LENGTH_LONG).show();
+
+                         } else {
+
+                             Toast.makeText(MainActivity.this, "Make sure that GPS is ON", Toast.LENGTH_LONG).show();
+
+                         }
+                     }
+                 }
+                 else {
+
+                     Toast.makeText(MainActivity.this, "Make sure that your Device is connected to Internet ", Toast.LENGTH_LONG).show();
+                 }
+               }
+           });
+
+
+
+
+
 
 
 
@@ -176,7 +205,8 @@ public class MainActivity extends AppCompatActivity implements ConnectionCallbac
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                  user=firebaseAuth.getCurrentUser();
                 if(user!=null) {
-
+                    key=user.getUid();
+                 Username=user.getDisplayName();
                  UserId = user.getEmail();
 
                    String compare1=getForm(UserId);
@@ -190,18 +220,7 @@ public class MainActivity extends AppCompatActivity implements ConnectionCallbac
                     Toast.makeText(MainActivity.this, "You're now signed in. Welcome to My Safety app .", Toast.LENGTH_SHORT).show();
                 }
 
-//                    mCursor=getForm(UserId);
-//                    mCursor.moveToFirst();
-//                    String compare=mCursor.getString((mCursor.getColumnIndex(DetailsContract.DetailsEntry.EMAIL_ADD)));
-//
-//                    if (!compare.equals(UserId)) {
-//
-//                        Intent intent = new Intent(MainActivity.this, FormActivity.class);
-//                        startActivity(intent);
-//
-//
-//                    }
-                }
+             }
                 else {
                     startActivityForResult(
                             AuthUI.getInstance()
@@ -234,30 +253,15 @@ public class MainActivity extends AppCompatActivity implements ConnectionCallbac
             }
 
         }
-//        else if (requestCode==RC_PHOTO_PICKER && resultCode==RESULT_OK){
-//
-//
-//            Uri selectedImageUri=data.getData();
-//            StorageReference Photoref=mPhotoStorageReference.child(selectedImageUri.getLastPathSegment());
-//            Photoref.putFile(selectedImageUri).addOnSuccessListener(this, new OnSuccessListener<UploadTask.TaskSnapshot>() {
-//                @Override
-//                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-//                    Uri downloadUrl=taskSnapshot.getDownloadUrl();
-//                    Log.v(TAG,"SuccessFully_Added"+downloadUrl.toString());
-//
-//                }
-//            });
-//            Toast.makeText(this,"Adhar Card Photo SuccessFully added",Toast.LENGTH_SHORT).show();
-//        }
 
 
     }
 
     @Override
     protected void onStart() {
-      //  if(this. mGoogleApiClient != null){
-        //    this. mGoogleApiClient.connect();
-        //}
+       if(this. mGoogleApiClient != null){
+            this. mGoogleApiClient.connect();
+        }
 
 
         super.onStart();
@@ -342,7 +346,6 @@ public class MainActivity extends AppCompatActivity implements ConnectionCallbac
 
     @Override
     public void onLocationChanged(Location location) {
-        //mTextView.setText(Double.toString(location.getLatitude())+"\n"+Double.toString(location.getLongitude()));
         latitude=Double.toString(location.getLatitude());
         longitude=Double.toString(location.getLongitude());
     }
@@ -352,13 +355,13 @@ public class MainActivity extends AppCompatActivity implements ConnectionCallbac
         PersonDetailsDBHelper dbHelper=new PersonDetailsDBHelper(MainActivity.this);
         mDb=dbHelper.getReadableDatabase();
         String compare="";
-        mCursor=mDb.query(DetailsContract.DetailsEntry.TABLE_NAME,new String[]{DetailsContract.DetailsEntry.EMAIL_ADD},
+        mCursor=mDb.query(DetailsContract.DetailsEntry.TABLE_NAME,new String[]{DetailsContract.DetailsEntry.EMAIL_ADD,DetailsContract.DetailsEntry.PHONE_NO},
                 DetailsContract.DetailsEntry.EMAIL_ADD+" = ? ",new String[]{UserId},null,null,null);
        if(mCursor.getCount()>0){
            mCursor.moveToFirst();
 
             compare= mCursor.getString((mCursor.getColumnIndex(DetailsContract.DetailsEntry.EMAIL_ADD)));
-
+              Phone_no=mCursor.getString(mCursor.getColumnIndex(DetailsContract.DetailsEntry.PHONE_NO));
              return  compare;
        }
 
@@ -368,19 +371,7 @@ public class MainActivity extends AppCompatActivity implements ConnectionCallbac
        }
 
 
-//        String compare = "";
-//         if(mCursor.getCount()!=0) {
-//             mCursor.moveToFirst();
-//
-//
-//             compare = mCursor.getString((mCursor.getColumnIndex(DetailsContract.DetailsEntry.EMAIL_ADD)));
-//             return compare;
-//         }
-//         else {
-//
-//
-//             return compare;
-//         }
+
 
 
     }
@@ -403,16 +394,7 @@ public class MainActivity extends AppCompatActivity implements ConnectionCallbac
                ActivityCompat.requestPermissions(MainActivity.this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION}, LOCATION_REQUEST);
                return;
 
-               // TODO: Consider calling
-               //    ActivityCompat#requestPermissions
-               // here to request the missing permissions, and then overriding
-               //public void onRequestPermissionsResult(int requestCode,  String[] permissions,
-               //                                 int[] grantResults){
 
-               // }
-
-               // to handle the case where the user grants the permission. See the documentation
-               // for ActivityCompat#requestPermissions for more details.
 
            }
 
@@ -421,7 +403,7 @@ public class MainActivity extends AppCompatActivity implements ConnectionCallbac
                public void onLocationChanged(Location location) {
                    latitude = Double.toString(location.getLatitude());
                    longitude = Double.toString(location.getLongitude());
-               //    mTextView.setText("" + latitude + "  " + longitude);
+
 
                }
 
@@ -443,6 +425,15 @@ public class MainActivity extends AppCompatActivity implements ConnectionCallbac
 
 
        }
+   }
+
+
+   public static ArrayList<String> getpolicecontacts(){
+
+
+
+
+return Police_contacts;
    }
 
 

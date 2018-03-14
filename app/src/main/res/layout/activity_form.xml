@@ -55,7 +55,7 @@
         android:breakStrategy="balanced"
         android:fitsSystemWindows="true"
         android:gravity="top"
-        android:hint="Your Message"
+        android:hint="Address"
         android:inputType="textMultiLine"
         android:padding="5dp"
         android:singleLine="false"

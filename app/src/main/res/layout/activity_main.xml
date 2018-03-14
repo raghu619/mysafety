@@ -5,7 +5,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#c5d607"
+    android:background="#7E57C2"
 
     tools:context="com.example.raghvendra.mysafety.MainActivity">
 <!--
@@ -28,7 +28,7 @@
 
         android:cropToPadding="true"
         android:scaleType="centerCrop"
-        android:src="@drawable/ic_launcher"
+        android:src="@drawable/ic_launcherweb"
         android:visibility="visible"/>
 
     <TextView
