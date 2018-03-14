@@ -7,9 +7,15 @@
         android:id="@+id/contacts_group"
 
         android:title="Create group "
-        android:icon="@drawable/ic_action_name"
+        android:icon="@drawable/ic_launcher"
         app:showAsAction="always"
         />
+    <item
+        android:id="@+id/refresh"
+        android:title="Refresh"
+        android:icon="@drawable/quantum_ic_refresh_white_24"
+        app:showAsAction="always"/>
+
     <item
         android:id="@+id/sign_out_menu"
         android:title="@string/menu_title"

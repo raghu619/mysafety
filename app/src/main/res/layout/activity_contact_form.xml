@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFCDD2"
+    android:background="#EDE7F6"
     android:orientation="vertical"
     android:padding="16dp"
     tools:context="com.example.raghvendra.mysafety.ContactsACT.ContactForm">
@@ -14,7 +14,7 @@
         android:layout_gravity="center_horizontal"
         android:layout_marginBottom="16dp"
         android:layout_marginTop="5dp"
-        android:text="MY SAFETY DETAILS"
+        android:text="ADD CONTACT"
         android:textColor="#ce3232"
         android:textSize="40sp"
         android:typeface="serif" />

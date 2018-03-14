@@ -46,9 +46,9 @@ public class NotificationUtils {
                 .setColor(ContextCompat.getColor(context, R.color.colorPrimary))
                 .setSmallIcon(R.drawable.ic_launcherlogo)
                 .setLargeIcon(largeIcon(context))
-                .setContentTitle("This just testing ")
+                .setContentTitle("My Safety ")
                 .setContentText(message)
-                .setStyle(new NotificationCompat.BigTextStyle().bigText("This just testing "))
+                .setStyle(new NotificationCompat.BigTextStyle().bigText("My Safety"))
                 .setDefaults(Notification.DEFAULT_VIBRATE)
                 .setContentIntent(contentIntent(context))
 

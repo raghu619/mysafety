@@ -1,6 +1,8 @@
 package com.example.raghvendra.mysafety;
 
 import android.*;
+import android.Manifest;
+import android.app.Activity;
 import android.app.LoaderManager;
 import android.content.Context;
 import android.content.Intent;
@@ -75,10 +77,15 @@ public class MainActivity extends AppCompatActivity implements ConnectionCallbac
     private FirebaseAuth.AuthStateListener mAuthStateListener;
 
     private FirebaseStorage mFirebaseStorage;
+    private  AsyncTask Back;
+    private static final int MY_PERMISSIONS_REQUEST_SEND_SMS =0 ;
+    private int counter=0;
 
 
     private ImageView mImageView;
     private GoogleApiClient mGoogleApiClient;
+    private  boolean flag;
+
 
     private  String latitude;
     private  String longitude;
@@ -97,14 +104,22 @@ public class MainActivity extends AppCompatActivity implements ConnectionCallbac
     private  String address="";
     private String date="";
     String key="";
+boolean flag2=true;
     private  String status="Not Accepted";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
+        ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 
-       mImageView=findViewById(R.id.imageView1);
+        if (savedInstanceState != null){
+            if (savedInstanceState.containsKey("Police_contacts")) {
+                Police_contacts = savedInstanceState.getStringArrayList("Police_contacts");
+            }
+    }
+
+            mImageView=findViewById(R.id.imageView1);
 
       mFirebseAuth=FirebaseAuth.getInstance();
         mFirebaseDatabase=FirebaseDatabase.getInstance();
@@ -115,6 +130,22 @@ public class MainActivity extends AppCompatActivity implements ConnectionCallbac
 
         mMessagesDatabaseReference=mFirebaseDatabase.getReference();
 
+        Back=new AsyncTask() {
+
+
+            @Override
+            protected Object doInBackground(Object[] objects) {
+                Police_contacts=get_police_contacts();
+                return  Police_contacts;
+
+
+            }
+
+
+        };
+
+
+
 
         mGoogleApiClient =new GoogleApiClient.Builder(this)
                 .addApi(LocationServices.API)
@@ -124,70 +155,75 @@ public class MainActivity extends AppCompatActivity implements ConnectionCallbac
 
 
         getLocationrequest();
-        mGoogleApiClient.connect();
-        mMessagesDatabaseReference.child("POLICE_DATA").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                Police_contacts=new ArrayList<String>();
+      mGoogleApiClient.connect();
+       try {
+           Back.execute();
 
-                for(DataSnapshot ds : dataSnapshot.getChildren()){
-                    Police_data data = ds.getValue(Police_data.class);
+       }
+       catch (Exception e){
 
-                    Police_contacts.add(data.getMphone_no());
-
-
-
-                }
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-
-
-
-
+           Toast.makeText(MainActivity.this,"Failed to fetch the Police data Make sure that Internet is on",Toast.LENGTH_LONG).show();
+       }
 
            mImageView.setOnClickListener(new View.OnClickListener() {
                @Override
                public void onClick(View v) {
+
+
                    ConnectivityManager connMgr=(ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
                    NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
                  if(networkInfo != null && networkInfo.isConnected()) {
+                     if (Police_contacts != null) {
+
+                         if (mGoogleApiClient != null) {
 
 
-                     if (mGoogleApiClient != null) {
+                             if (longitude != null && latitude != null) {
+                                 Double slatitude = new Double(latitude);
+                                 Double slongitude = new Double(longitude);
+
+                                 if (ActivityCompat.checkSelfPermission(MainActivity.this, android.Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(MainActivity.this, android.Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED) {
+                                     ActivityCompat.requestPermissions((Activity) MainActivity.this, new String[]{Manifest.permission.SEND_SMS}, MY_PERMISSIONS_REQUEST_SEND_SMS);
 
 
-                         if (longitude != null && latitude != null) {
-                             Double slatitude = new Double(latitude);
-                             Double slongitude = new Double(longitude);
-                             SmsUtilities.sendSMSMessage(MainActivity.this, slatitude, slongitude);
-                             address = SmsUtilities.getAddress();
-
-                             SimpleDateFormat df = new SimpleDateFormat("EEE, d MMM yyyy, KK:mm");
-                             date = df.format(Calendar.getInstance().getTime());
+                                 }
 
 
-                             Current_Location current_location = new Current_Location(String.valueOf(longitude), String.valueOf(latitude), UserId, address, date, Phone_no, Username, key, status);
+                                 flag = SmsUtilities.sendSMSMessage(MainActivity.this, slatitude, slongitude);
+                                 if (flag = true) {
+                                     address = SmsUtilities.getAddress();
 
-                             mMessagesDatabaseReference.child("DATA").child(key).setValue(current_location);
-                             Toast.makeText(MainActivity.this, "Successfully uploaded", Toast.LENGTH_LONG).show();
+                                     SimpleDateFormat df = new SimpleDateFormat("EEE, d MMM yyyy, KK:mm");
+                                     date = df.format(Calendar.getInstance().getTime());
 
-                         } else {
 
-                             Toast.makeText(MainActivity.this, "Make sure that GPS is ON", Toast.LENGTH_LONG).show();
+                                     Current_Location current_location = new Current_Location(String.valueOf(longitude), String.valueOf(latitude), UserId, address, date, Phone_no, Username, key, status);
 
+                                     mMessagesDatabaseReference.child("DATA").child(key).setValue(current_location);
+
+                                 } else {
+                                     Toast.makeText(MainActivity.this, "Make sure that your Device is connected to Internet ", Toast.LENGTH_LONG).show();
+
+                                 }
+
+                             } else {
+
+                                 Toast.makeText(MainActivity.this, "Make sure that Your Device GPS is ON", Toast.LENGTH_LONG).show();
+
+                             }
                          }
+                     }
+                     else {
+
+                         Toast.makeText(MainActivity.this,  " Police Data is not loaded Make sure that your Device is connected to Internet And Press the Refresh button", Toast.LENGTH_LONG).show();
+
                      }
                  }
                  else {
 
                      Toast.makeText(MainActivity.this, "Make sure that your Device is connected to Internet ", Toast.LENGTH_LONG).show();
                  }
+
                }
            });
 
@@ -217,7 +253,11 @@ public class MainActivity extends AppCompatActivity implements ConnectionCallbac
                    startActivity(intent);
                 }
                 else {
-                    Toast.makeText(MainActivity.this, "You're now signed in. Welcome to My Safety app .", Toast.LENGTH_SHORT).show();
+                        if(flag2){
+                              Toast.makeText(MainActivity.this, "You're now signed in. Welcome to My Safety app .", Toast.LENGTH_SHORT).show();
+
+                        flag2=false;
+                        }
                 }
 
              }
@@ -228,7 +268,7 @@ public class MainActivity extends AppCompatActivity implements ConnectionCallbac
                                     .setIsSmartLockEnabled(false)
                                     .setAvailableProviders(
                                             Arrays.asList(new AuthUI.IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build(),
-                                                    new AuthUI.IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER).build())).build(),
+                                                    new AuthUI.IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER).build())).setTheme(R.style.LoginTheme).setLogo(R.mipmap.ic_launcherlogo).build(),
                                                                                             RC_SIGN_IN);
 
 
@@ -240,16 +280,26 @@ public class MainActivity extends AppCompatActivity implements ConnectionCallbac
     }
 
     @Override
+    protected void onSaveInstanceState(Bundle outState) {
+
+        outState.putStringArrayList("Police_contacts",Police_contacts);
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == RC_SIGN_IN) {
             if (resultCode == RESULT_OK) {
-                Toast.makeText(this, "Sign in Successfully", Toast.LENGTH_SHORT).show();
+
+
+                     Toast.makeText(this, "Sign in Successful", Toast.LENGTH_SHORT).show();
 
             } else if (resultCode == RESULT_CANCELED) {
                 // Sign in was canceled by the user, finish the activity
-                Toast.makeText(this, "Sign in canceled", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Sign in canceled Make your is Device is Connected to active Network", Toast.LENGTH_SHORT).show();
                 finish();
+
             }
 
         }
@@ -265,6 +315,15 @@ public class MainActivity extends AppCompatActivity implements ConnectionCallbac
 
 
         super.onStart();
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        if(!flag2){
+
+            finish();
+        }
     }
 
     @Override
@@ -307,6 +366,13 @@ public class MainActivity extends AppCompatActivity implements ConnectionCallbac
                  Intent contactsActivity=new Intent(context, ContactsActivity.class);
                  startActivity(contactsActivity);
                  return true;
+
+             case R.id.refresh:
+                 Intent intent=new Intent(getIntent());
+                 startActivity(intent);
+
+                 return true;
+
 
              default:
                  return super.onOptionsItemSelected(item);
@@ -438,7 +504,33 @@ return Police_contacts;
 
 
 
+  private  ArrayList<String>  get_police_contacts(){
 
+      mMessagesDatabaseReference=mFirebaseDatabase.getReference();
+      mMessagesDatabaseReference.child("POLICE_DATA").addValueEventListener(new ValueEventListener() {
+          @Override
+          public void onDataChange(DataSnapshot dataSnapshot) {
+              Police_contacts = new ArrayList<String>();
+
+              for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                  Police_data data = ds.getValue(Police_data.class);
+
+                  Police_contacts.add(data.getMphone_no());
+
+
+              }
+
+          }
+
+          @Override
+          public void onCancelled(DatabaseError databaseError) {
+
+          }
+      });
+
+
+return  Police_contacts;
+  }
 
 
 }

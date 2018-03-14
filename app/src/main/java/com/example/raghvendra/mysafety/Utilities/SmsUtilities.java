@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 
 import com.example.raghvendra.mysafety.MainActivity;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -24,15 +25,17 @@ import java.util.List;
 
 public class SmsUtilities {
     private static String message;
+    private static boolean flag=true;
 
-    private static final int MY_PERMISSIONS_REQUEST_SEND_SMS =0 ;
+
     static   String address="";
     static ArrayList<String>  phones2;
+    private  static FirebaseUser user;
 
-    public static void sendSMSMessage(Context context,double latitude,double longitude) {
+    public static boolean sendSMSMessage(Context context,double latitude,double longitude) {
         ArrayList<String> phone_nos;
 
-
+       user=MainActivity.getUserdetails();
 
         phone_nos = Database_utilities.getContactsList(context);
          phones2= MainActivity.getpolicecontacts();
@@ -49,23 +52,28 @@ public class SmsUtilities {
         }
 
 
-        message = "Need help " + address;
-        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context, Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions((Activity) context, new String[]{Manifest.permission.SEND_SMS}, MY_PERMISSIONS_REQUEST_SEND_SMS);
+        message = "Need help For "+user.getDisplayName()+" From " + address;
 
-
-            return;
-        }
         int count;
         if(phone_nos !=null)
               count = phone_nos.size();
         else{
             count=0;
         }
+        int count2=0;
         if(count>0){
-          int count2=phones2.size();
+            try {
+                 count2 = phones2.size();
+            }
+            catch (Exception e){
+
+                Toast.makeText(context,"Failed to fetch the Police data Make sure that Internet is on",Toast.LENGTH_LONG).show();
+                flag=false;
+               return flag;
+
+            }
             for(int j=0;j<count2;j++)
-                      phone_nos.add(phones2.get(j));
+                      phone_nos.add( phones2.get(j));
 
             count=phone_nos.size();
             for (int i = 0; i < count; i++) {
@@ -75,7 +83,7 @@ public class SmsUtilities {
                 //smsManager.sendTextMessage(phones2.get(i),null,message,null,null);
             }
 
-            Toast.makeText(context, "SMS sent.",
+            Toast.makeText(context, "SMS sent. and Successfully uploaded your request",
 
                     Toast.LENGTH_LONG).show();
 
@@ -83,15 +91,31 @@ public class SmsUtilities {
 
         else {
 
-            Toast.makeText(context,"Add numbers",Toast.LENGTH_LONG).show();
-            int count1=phones2.size();
-            for (int i = 0; i < count1; i++) {
+            Toast.makeText(context, "Add numbers to Contacts List", Toast.LENGTH_LONG).show();
+            try {
 
-                SmsManager smsManager = SmsManager.getDefault();
-                smsManager.sendTextMessage(phones2.get(i),null,message,null,null);
+
+                int count1 = phones2.size();
+                for (int i = 0; i < count1; i++) {
+
+                    SmsManager smsManager = SmsManager.getDefault();
+                    smsManager.sendTextMessage(phones2.get(i), null, message, null, null);
+                }
+
+
+                Toast.makeText(context, "SMS sent. and Successfully uploaded your request",
+
+                        Toast.LENGTH_LONG).show();
+
+            }
+            catch (Exception e){
+                flag=false;
+                Toast.makeText(context,"Failed to fetch the Police data Make sure that Internet is on",Toast.LENGTH_LONG).show();
+                return flag;
             }
 
         }
+ return flag;
     }
 
     public  static String getAddress(){
@@ -110,6 +134,8 @@ public class SmsUtilities {
         }
 
     }
+
+
 
 
 }
