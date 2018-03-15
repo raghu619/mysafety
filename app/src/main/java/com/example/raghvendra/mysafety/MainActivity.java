@@ -182,15 +182,10 @@ boolean flag2=true;
                                  Double slatitude = new Double(latitude);
                                  Double slongitude = new Double(longitude);
 
-                                 if (ActivityCompat.checkSelfPermission(MainActivity.this, android.Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(MainActivity.this, android.Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED) {
-                                     ActivityCompat.requestPermissions((Activity) MainActivity.this, new String[]{Manifest.permission.SEND_SMS}, MY_PERMISSIONS_REQUEST_SEND_SMS);
 
 
-                                 }
+                                  SmsUtilities.sendSMSMessage(MainActivity.this, slatitude, slongitude);
 
-
-                                 flag = SmsUtilities.sendSMSMessage(MainActivity.this, slatitude, slongitude);
-                                 if (flag = true) {
                                      address = SmsUtilities.getAddress();
 
                                      SimpleDateFormat df = new SimpleDateFormat("EEE, d MMM yyyy, KK:mm");
@@ -201,10 +196,6 @@ boolean flag2=true;
 
                                      mMessagesDatabaseReference.child("DATA").child(key).setValue(current_location);
 
-                                 } else {
-                                     Toast.makeText(MainActivity.this, "Make sure that your Device is connected to Internet ", Toast.LENGTH_LONG).show();
-
-                                 }
 
                              } else {
 

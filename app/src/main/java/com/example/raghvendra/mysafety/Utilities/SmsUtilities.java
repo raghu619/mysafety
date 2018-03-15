@@ -26,13 +26,14 @@ import java.util.List;
 public class SmsUtilities {
     private static String message;
     private static boolean flag=true;
+    private static final int MY_PERMISSIONS_REQUEST_SEND_SMS =0 ;
 
 
     static   String address="";
     static ArrayList<String>  phones2;
     private  static FirebaseUser user;
 
-    public static boolean sendSMSMessage(Context context,double latitude,double longitude) {
+    public static void  sendSMSMessage(Context context,double latitude,double longitude) {
         ArrayList<String> phone_nos;
 
        user=MainActivity.getUserdetails();
@@ -68,14 +69,20 @@ public class SmsUtilities {
             catch (Exception e){
 
                 Toast.makeText(context,"Failed to fetch the Police data Make sure that Internet is on",Toast.LENGTH_LONG).show();
-                flag=false;
-               return flag;
+
+
 
             }
             for(int j=0;j<count2;j++)
                       phone_nos.add( phones2.get(j));
 
             count=phone_nos.size();
+            if (ActivityCompat.checkSelfPermission(context, android.Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context, android.Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions((Activity) context, new String[]{Manifest.permission.SEND_SMS}, MY_PERMISSIONS_REQUEST_SEND_SMS);
+
+
+            }
+
             for (int i = 0; i < count; i++) {
 
                 SmsManager smsManager = SmsManager.getDefault();
@@ -94,6 +101,11 @@ public class SmsUtilities {
             Toast.makeText(context, "Add numbers to Contacts List", Toast.LENGTH_LONG).show();
             try {
 
+                if (ActivityCompat.checkSelfPermission(context, android.Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context, android.Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions((Activity) context, new String[]{Manifest.permission.SEND_SMS}, MY_PERMISSIONS_REQUEST_SEND_SMS);
+
+
+                }
 
                 int count1 = phones2.size();
                 for (int i = 0; i < count1; i++) {
@@ -109,13 +121,13 @@ public class SmsUtilities {
 
             }
             catch (Exception e){
-                flag=false;
+
                 Toast.makeText(context,"Failed to fetch the Police data Make sure that Internet is on",Toast.LENGTH_LONG).show();
-                return flag;
+
             }
 
         }
- return flag;
+
     }
 
     public  static String getAddress(){
