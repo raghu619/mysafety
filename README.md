@@ -10,8 +10,9 @@ Mysafety app provides major safety features to women when she feels unsafe in in
  height="400">  <img src="https://user-images.githubusercontent.com/26144019/42167400-a098f3bc-7e2b-11e8-8510-1559c7cbb941.jpg" width="200" 
  height="400">
 
-![screenshot_2018-03-15-13-18-52-237_com android mms](https://user-images.githubusercontent.com/26144019/42167531-fd4d4176-7e2b-11e8-838b-12c36aa872dc.png)
-![screenshot_2018-03-22-12-30-54-700_com example raghvendra mysafety](https://user-images.githubusercontent.com/26144019/42167554-07c2e3fe-7e2c-11e8-92df-350fab5aeb5f.png)
+<img src="https://user-images.githubusercontent.com/26144019/42167531-fd4d4176-7e2b-11e8-838b-12c36aa872dc.png" width="200" 
+ height="400">   <img src="https://user-images.githubusercontent.com/26144019/42167554-07c2e3fe-7e2c-11e8-92df-350fab5aeb5f.png" width="200"
+height="400")
 
 
 
