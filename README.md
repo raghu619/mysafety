@@ -12,7 +12,7 @@ Mysafety app provides major safety features to women when she feels unsafe in in
 
 <img src="https://user-images.githubusercontent.com/26144019/42167531-fd4d4176-7e2b-11e8-838b-12c36aa872dc.png" width="200" 
  height="400">   <img src="https://user-images.githubusercontent.com/26144019/42167554-07c2e3fe-7e2c-11e8-92df-350fab5aeb5f.png" width="200"
-height="400")
+height="400">
 
 
 
