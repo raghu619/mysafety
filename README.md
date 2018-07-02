@@ -5,7 +5,7 @@ Mysafety app provides major safety features to women when she feels unsafe in in
 
 # Screenshots
 
-![screenshot_2018-03-15-13-04-08-580_com example raghvendra mysafety](https://user-images.githubusercontent.com/26144019/42167383-9523336c-7e2b-11e8-8110-dc2c2b675517.png)
+![](https://user-images.githubusercontent.com/26144019/42167383-9523336c-7e2b-11e8-8110-dc2c2b675517.png)
 
 
 ![img_20180701_110041](https://user-images.githubusercontent.com/26144019/42167412-aa0a8eec-7e2b-11e8-8ebd-f4b1f70d5fbb.jpg)
