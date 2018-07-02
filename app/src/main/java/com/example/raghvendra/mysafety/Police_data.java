@@ -12,6 +12,7 @@ public class Police_data {
     String  mphone_no;
     String  maddress;
 
+
     Police_data(){
 
 

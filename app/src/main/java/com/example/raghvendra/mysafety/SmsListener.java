@@ -17,6 +17,8 @@ import com.example.raghvendra.mysafety.Utilities.NotificationUtils;
 public class SmsListener extends BroadcastReceiver {
     private String mMessage;
     private String mCompareString="Police officer";
+    private String mtime;
+    int length;
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
@@ -27,11 +29,31 @@ public class SmsListener extends BroadcastReceiver {
 
             for (SmsMessage smsMessage : Telephony.Sms.Intents.getMessagesFromIntent(intent)) {
                 mMessage = smsMessage.getMessageBody();
-
+//
             }
 
-           if(mMessage.contains(mCompareString))
-               NotificationUtils.remindUserBecauseCharging(context,mMessage);
+
+
+
+           if(mMessage.contains(mCompareString)) {
+               String[] splitStr = mMessage.trim().split("\\s+");
+               length = splitStr.length;
+               mtime = splitStr[length-2];
+               mtime+=" "+splitStr[length-1];
+
+               if(mMessage.contains("hour")){
+
+                   String[] splitStr1 = mMessage.trim().split("\\s+");
+                   length = splitStr1.length;
+                   mtime=splitStr1[length-4];
+                   mtime+=" "+splitStr1[length-3];
+                   mtime += " "+splitStr1[length-2];
+                   mtime+=" "+splitStr[length-1];
+
+               }
+
+               NotificationUtils.remindUserBecauseCharging(context, mMessage,mtime);
+           }
         }
     }
 }

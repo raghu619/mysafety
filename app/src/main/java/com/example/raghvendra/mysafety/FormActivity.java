@@ -1,6 +1,7 @@
 package com.example.raghvendra.mysafety;
 
 import android.content.ContentValues;
+import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -86,10 +87,15 @@ public class FormActivity extends AppCompatActivity {
                                                        AdharId=mEdittext5.getText().toString().trim();
                                                        Address=mEdittext4.getText().toString().trim();
 
+
                                                        UserData info=new UserData(Username,Email,Phone_no,AdharId,Address);
                                                           mMessagesDatabaseReference.child(mFirebaseAuth.getUid()).setValue(info);
                                                        Toast.makeText(FormActivity.this, "Information Stored Sucessfully" + checkID, Toast.LENGTH_LONG).show();
+                                                       mDb.close();
                                                        finish();
+                                                       Intent k=new Intent(FormActivity.this,MainActivity.class);
+                                                       startActivity(k);
+
 
                                                    }
                                                    else {

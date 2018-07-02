@@ -8,41 +8,65 @@
     android:background="#7E57C2"
 
     tools:context="com.example.raghvendra.mysafety.MainActivity">
-<!--
-    <ProgressBar
-        android:id="@+id/progressBar"
-        style="?android:attr/progressBarStyleLarge"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"/>
--->
+
+        <!--<ProgressBar-->
+            <!--android:id="@+id/progressBar"-->
+            <!--style="?android:attr/progressBarStyleLarge"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_centerHorizontal="true"-->
+            <!--android:layout_centerVertical="true"/>-->
     <ImageView
         android:id="@+id/imageView1"
 
         android:layout_width="150dp"
         android:layout_height="150dp"
+
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
-        android:adjustViewBounds="false"
-
         android:cropToPadding="true"
         android:scaleType="centerCrop"
-        android:src="@drawable/ic_launcherweb"
-        android:visibility="visible"/>
+        android:src="@drawable/panicbtn01"
+        android:visibility="visible"
+        android:adjustViewBounds="false"/>
+    <!-- -->
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="40dp"
+        android:text="To be Used Only in"
+        android:textColor="@android:color/white"
+        android:textSize="24sp" />
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="80dp"
+        android:text="Case of Emergency !"
+        android:textColor="@android:color/white"
+        android:textSize="24sp" />
 
     <TextView
         android:id="@+id/editText"
         android:layout_width="250dp"
         android:layout_height="50dp"
-        android:ems="10"
-        android:textAppearance="?android:textAppearanceMedium"
-        android:fontFamily="sans-serif_medium"
-        android:text="Feeling panic press Button"
-        android:gravity="center"
         android:layout_below="@+id/imageView1"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="2dp" />
+        android:layout_marginTop="30dp"
+        android:ems="10"
+        android:fontFamily="sans-serif_medium"
+        android:gravity="center"
+        android:text="Feeling panic press Button"
+        android:textAppearance="?android:textAppearanceMedium" />
+
+
+
+
 
 
 

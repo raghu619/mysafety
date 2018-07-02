@@ -10,8 +10,10 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.content.ContextCompat;
 
+import com.example.raghvendra.mysafety.CountingActivity;
 import com.example.raghvendra.mysafety.MainActivity;
 import com.example.raghvendra.mysafety.R;
 import com.google.firebase.database.ChildEventListener;
@@ -38,9 +40,7 @@ public class NotificationUtils {
      */
     private static final String WATER_REMINDER_NOTIFICATION_CHANNEL_ID = "reminder_notification_channel1";
 
-    public static void remindUserBecauseCharging(Context context,String message) {
-        NotificationManager notificationManager = (NotificationManager)
-                context.getSystemService(Context.NOTIFICATION_SERVICE);
+    public static void remindUserBecauseCharging(Context context,String message,String time) {
 
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(context,WATER_REMINDER_NOTIFICATION_CHANNEL_ID)
                 .setColor(ContextCompat.getColor(context, R.color.colorPrimary))
@@ -48,11 +48,19 @@ public class NotificationUtils {
                 .setLargeIcon(largeIcon(context))
                 .setContentTitle("My Safety ")
                 .setContentText(message)
-                .setStyle(new NotificationCompat.BigTextStyle().bigText("My Safety"))
-                .setDefaults(Notification.DEFAULT_VIBRATE)
-                .setContentIntent(contentIntent(context))
-
+                .setStyle(new NotificationCompat.BigTextStyle().bigText(message))
+                .setDefaults(Notification.DEFAULT_SOUND)
                 .setAutoCancel(true);
+        Intent detailIntentForToday = new Intent(context, CountingActivity.class);
+        detailIntentForToday.putExtra(Intent.EXTRA_TEXT,time);
+        TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
+        taskStackBuilder.addNextIntentWithParentStack(detailIntentForToday);
+        PendingIntent resultPendingIntent = taskStackBuilder
+                .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+        notificationBuilder.setContentIntent(resultPendingIntent);
+        NotificationManager notificationManager = (NotificationManager)
+                context.getSystemService(Context.NOTIFICATION_SERVICE);
+
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN
                 && Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
@@ -62,6 +70,7 @@ public class NotificationUtils {
     }
     private static PendingIntent contentIntent(Context context) {
         Intent startActivityIntent = new Intent(context, MainActivity.class);
+
         return PendingIntent.getActivity(
                 context,
                 WATER_REMINDER_PENDING_INTENT_ID,

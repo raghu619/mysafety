@@ -48,8 +48,10 @@ public class ContactForm extends AppCompatActivity {
                                                    Intent submitActivity = new Intent(ContactForm.this, ContactsActivity.class);
 
                                                    Toast.makeText(ContactForm.this, "ROW ID" + checkID, Toast.LENGTH_LONG).show();
-                                                   startActivity(submitActivity);
+                                                   mDb.close();
                                                    finish();
+                                                   startActivity(submitActivity);
+
 
 
                                                } else {

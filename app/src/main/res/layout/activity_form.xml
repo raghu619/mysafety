@@ -25,7 +25,7 @@
         android:layout_height="wrap_content"
         android:backgroundTint="@color/colorPrimaryDark"
         android:hint="Name"
-
+        android:drawableLeft="@drawable/ic_action_user"
 
         android:inputType="textPersonName"
         android:id="@+id/editText"/>
@@ -37,9 +37,7 @@
         android:layout_marginTop="10dp"
         android:backgroundTint="@color/colorPrimaryDark"
         android:hint="Email"
-
-
-
+        android:drawableLeft="@drawable/ic_action_eid2"
         android:inputType="textEmailAddress"
         android:id="@+id/email"/>
 
@@ -48,7 +46,7 @@
         android:layout_height="wrap_content"
         android:backgroundTint="@color/colorPrimaryDark"
         android:hint="Phone"
-
+        android:drawableLeft="@drawable/ic_action_con2"
 
         android:inputType="phone"
         android:id="@+id/edit_phone_number"/>
@@ -58,27 +56,29 @@
         android:layout_height="wrap_content"
         android:backgroundTint="@color/colorPrimaryDark"
         android:hint="ADHAR ID"
+        android:drawableLeft="@drawable/ic_action_aadid3"
 
 
         android:inputType="phone"
         android:id="@+id/edit_Adhar_id"/>
 
     <EditText
-        android:layout_width="fill_parent"
-        android:layout_height="150dp"
+        android:id="@+id/edit_query"
+        android:layout_width="342dp"
+        android:layout_height="69dp"
         android:layout_marginBottom="10dp"
         android:layout_marginTop="10dp"
         android:backgroundTint="@color/colorPrimaryDark"
         android:breakStrategy="balanced"
+
         android:fitsSystemWindows="true"
         android:gravity="top"
         android:hint="Address"
+
         android:inputType="textMultiLine"
+
         android:padding="5dp"
-
-
-        android:singleLine="false"
-        android:id="@+id/edit_query"/>
+        android:singleLine="false" />
 
     <Button
         android:layout_width="wrap_content"

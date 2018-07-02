@@ -11,10 +11,8 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.SEND_SMS" />
-    <uses-permission android:name="android.permission.RECEIVE_SMS"></uses-permission>
-    <uses-permission android:name="android.permission.READ_SMS"></uses-permission>
-
-
+    <uses-permission android:name="android.permission.RECEIVE_SMS" />
+    <uses-permission android:name="android.permission.READ_SMS" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
@@ -29,41 +27,47 @@
             android:value="@integer/google_play_services_version" />
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyAZqFz811D6zPRQGSZHjIwkiQpM5TR6_Vc" />
+            android:value="Your api key" />
 
         <activity android:name=".MainActivity">
+                    </activity>
+        <activity android:name=".FormActivity" />
+        <activity
+            android:name=".ContactsACT.ContactsActivity"
+            android:label="@string/title_activity_contacts"
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MainActivity" />
+        </activity>
+        <activity
+            android:name=".ContactsACT.ContactForm"
+            android:label="Add Contacts"
+            android:parentActivityName=".ContactsACT.ContactsActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ContactsACT.ContactsActivity" />
+        </activity>
+
+        <receiver android:name=".SmsListener">
+            <intent-filter android:priority="1000">
+                <action android:name="android.provider.Telephony.SMS_RECEIVED" />
+            </intent-filter>
+        </receiver>
+
+        <activity android:name=".Map.MapActivity" />
+        <activity android:name=".CountingActivity" />
+        <activity android:name=".SplashActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
-        <activity android:name=".FormActivity" />
-        <activity
-            android:name=".ContactsACT.ContactsActivity"
-            android:label="@string/title_activity_contacts"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:parentActivityName=".MainActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity">
 
-            </meta-data>
-            </activity>
-        <activity android:name=".ContactsACT.ContactForm"
-            android:label="Add Contacts"
-            android:parentActivityName=".ContactsACT.ContactsActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".ContactsACT.ContactsActivity"/>
         </activity>
-
-        <receiver android:name=".SmsListener"
-            >
-            <intent-filter  android:priority="1000">
-                <action android:name="android.provider.Telephony.SMS_RECEIVED"></action>
-            </intent-filter>
-        </receiver>
     </application>
 
 </manifest>

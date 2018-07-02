@@ -18,10 +18,12 @@ import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatDelegate;
 import android.util.Log;
+import android.view.KeyboardShortcutGroup;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -62,6 +64,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import static com.google.android.gms.common.api.GoogleApiClient.*;
@@ -80,7 +83,7 @@ public class MainActivity extends AppCompatActivity implements ConnectionCallbac
     private  AsyncTask Back;
     private static final int MY_PERMISSIONS_REQUEST_SEND_SMS =0 ;
     private int counter=0;
-
+    private SwipeRefreshLayout refreshListener;
 
     private ImageView mImageView;
     private GoogleApiClient mGoogleApiClient;
@@ -99,19 +102,22 @@ public class MainActivity extends AppCompatActivity implements ConnectionCallbac
     private String Username;
     private static ArrayList<String> Police_contacts;
 
+
     private LocationRequest mLocationRequest;
     String UserId ="";
     private  String address="";
     private String date="";
     String key="";
+
 boolean flag2=true;
+
     private  String status="Not Accepted";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
-        ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        
 
         if (savedInstanceState != null){
             if (savedInstanceState.containsKey("Police_contacts")) {
@@ -147,6 +153,8 @@ boolean flag2=true;
 
 
 
+
+
         mGoogleApiClient =new GoogleApiClient.Builder(this)
                 .addApi(LocationServices.API)
                 .addConnectionCallbacks(this)
@@ -164,6 +172,8 @@ boolean flag2=true;
 
            Toast.makeText(MainActivity.this,"Failed to fetch the Police data Make sure that Internet is on",Toast.LENGTH_LONG).show();
        }
+
+
 
            mImageView.setOnClickListener(new View.OnClickListener() {
                @Override
@@ -236,20 +246,25 @@ boolean flag2=true;
                  Username=user.getDisplayName();
                  UserId = user.getEmail();
 
+
                    String compare1=getForm(UserId);
 
                     if(compare1.equals("") ){
 
                    Intent intent=new Intent(MainActivity.this,FormActivity.class);
                    startActivity(intent);
-                }
-                else {
+                  }
+                    else {
                         if(flag2){
                               Toast.makeText(MainActivity.this, "You're now signed in. Welcome to My Safety app .", Toast.LENGTH_SHORT).show();
 
                         flag2=false;
                         }
+
+
                 }
+
+
 
              }
                 else {
@@ -288,7 +303,7 @@ boolean flag2=true;
 
             } else if (resultCode == RESULT_CANCELED) {
                 // Sign in was canceled by the user, finish the activity
-                Toast.makeText(this, "Sign in canceled Make your is Device is Connected to active Network", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Sign in cancelled Make sure that your is Device is Connected to active Network", Toast.LENGTH_SHORT).show();
                 finish();
 
             }
@@ -359,8 +374,9 @@ boolean flag2=true;
                  return true;
 
              case R.id.refresh:
-                 Intent intent=new Intent(getIntent());
-                 startActivity(intent);
+                 finish();
+
+                 startActivity(getIntent());
 
                  return true;
 
@@ -419,6 +435,7 @@ boolean flag2=true;
 
             compare= mCursor.getString((mCursor.getColumnIndex(DetailsContract.DetailsEntry.EMAIL_ADD)));
               Phone_no=mCursor.getString(mCursor.getColumnIndex(DetailsContract.DetailsEntry.PHONE_NO));
+              mDb.close();
              return  compare;
        }
 
@@ -495,7 +512,8 @@ return Police_contacts;
 
 
 
-  private  ArrayList<String>  get_police_contacts(){
+  private  ArrayList<String>  get_police_contacts()
+  {
 
       mMessagesDatabaseReference=mFirebaseDatabase.getReference();
       mMessagesDatabaseReference.child("POLICE_DATA").addValueEventListener(new ValueEventListener() {
@@ -522,6 +540,7 @@ return Police_contacts;
 
 return  Police_contacts;
   }
+
 
 
 }
